@@ -34,7 +34,8 @@ Route::get('/home', 'HomeController@index')->name('home');
  * API
  **************************************/
 Route::prefix('api')->group(function(){
-//    Route::resource('todos', 'ToDosController', ['only'=>['index', 'store', 'show', 'update', 'destroy']]);
+//    Route::get('/apitodos/test1', 'ApiTodosController@test1');
+    Route::post('/apitodos/search', 'ApiTodosController@search');
     Route::resource('apitodos', 'ApiTodosController' );
 
 });

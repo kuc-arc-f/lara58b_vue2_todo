@@ -37,6 +37,9 @@
                     <a class="nav-link" href="/tasks">Task</a>
                 </li>
                 <li class="nav-item active">
+                    <a class="nav-link" href="/books">Books</a>
+                </li>                
+                <li class="nav-item active">
                     <a class="nav-link" href="/depts">Depts</a>
                 </li>
                 <li class="nav-item active">

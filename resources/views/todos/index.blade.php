@@ -11,7 +11,22 @@
         <hr />
         {{ link_to_route('todos.create', 'Create' ,null, ['class' => 'btn btn-primary']) }}
         <hr />
-        <br />
+        <div class="row">
+            <!--
+            <div class="col-sm-2">
+                {!! Form::label('search_key', 'search_key', ['class' => 'col-sm-3 control-label']) !!}
+            </div>
+            -->
+            <div class="col-sm-4">
+                <input type="text" class="form-control" placeholder="検索キーを入力下さい"
+                 v-model="search_key">
+            </div>
+            <div class="col-sm-2">
+                <a href="#" class="btn btn-outline-primary" v-on:click="searchTasks()" >検索
+                </a>
+            </div>
+        </div>
+        <hr />
         <div class="complete_wrap">
             <a href="#" class="btn btn-outline-primary" v-on:click="change_items(0)">未完
             </a>
@@ -20,7 +35,6 @@
         </div>
         <div class="panel-body">
             <!-- form_delete  -->
-
             <form method="POST" action="/todos/delete" name="form_delete">
                 @csrf 
                 {{ Form::hidden('delete_id', 0, ["id" => "delete_id"]) }}
@@ -70,46 +84,59 @@
 
 <!-- -->
 <script>
-    new Vue({
-        el: '#app',
-        created () {
-            this.getTasks(0);
-        },    
-        data: {
-            todos : [],
-            items : [],
-        },
-        methods: {
-            getTasks (complete) {
-                this.items = []
-                axios.get('/api/apitodos')
-                .then(res =>  {
-                    this.items = res.data
+new Vue({
+    el: '#app',
+    created () {
+        this.getTasks(0);
+    },    
+    data: {
+        todos : [],
+        items : [],
+        search_key : '',
+        complete : 0,
+    },
+    methods: {
+        getTasks (complete) {
+            this.items = []
+            axios.get('/api/apitodos')
+            .then(res =>  {
+                this.items = res.data
 //console.log(res.data )
-                    this.convert_todos(this.items, complete)
-                })            
-            },
-            convert_todos(items, complete){
-                var ret = []
-                items.forEach(function(item){
-                    if(item.complete == complete){
-                        ret.push(item)
-                    }
-                });
-                this.todos = ret
-//console.log(ret);
-            },
-            change_items(complete){
-                this.convert_todos( this.items, complete)
-            },
-            delete_todo(id){
+                this.convert_todos(this.items, complete)
+            })            
+        },
+        searchTasks(){
+            var data = {
+                'search_key': this.search_key,
+            };
+            axios.post('/api/apitodos/search' , data ).then(res => {
+//console.log(res.data );
+                this.items = res.data
+                this.convert_todos(this.items, this.complete)
+            });
+        },
+        convert_todos(items, complete){
+            var ret = []
+            items.forEach(function(item){
+                if(item.complete == complete){
+                    ret.push(item)
+                }
+            });
+            this.todos = ret
+
+        },
+        change_items(complete){
+            this.complete = complete
+            this.convert_todos( this.items, complete)
+        },
+        delete_todo(id){
 console.log(id);
-                $("#delete_id").val(id);
-                document.form_delete.submit();
+            $("#delete_id").val(id);
+            document.form_delete.submit();
 
-            },
+        },
 
-        }
-    });
-    </script>
+    }
+});
+</script>
 @endsection
