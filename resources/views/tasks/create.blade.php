@@ -4,58 +4,60 @@
 @section('title', '新規作成')
 
 @section('content')
-    <div class="panel panel-default">
-        <br />
-        <div class="panel-heading">
-            <h1>新規作成</h1>
-        </div>
-        <hr />
-		@if (count($errors) > 0)
-			<div class="alert alert-danger">
-			<ul>
-			@foreach ($errors->all() as $error)
-			    <li>{{ $error }}</li>
-			@endforeach
-			</ul>
-			</div>
-		@endif
-        <div class="panel-body">
-            {!! Form::model($task, [
-                'route' => 'tasks.store', 'method' => 'post', 'class' => 'form-horizontal'
-            ]) !!}
-            <div class="form-group">
-                <?php
-                $class_title = "form-control";
-                if(!empty(($errors->first('title')))){ $class_title = $class_title ." is-invalid"; }
-                ?>
-                {!! Form::label('title', 'title', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-sm-6">
-                    {!! Form::text('title', $task->title, [
-                        'id' => 'task-title', 'class' => $class_title ,'required'=>'required' ]) 
-                    !!}
-                    <div class="invalid-feedback">{{$errors->first('title')}}
-                    </div>                        
-                </div>
-            </div>
-            <div class="form-group">
-                {!! Form::label('content', 'content', ['class' => 'col-sm-3 control-label']) !!}
-                <div class="col-sm-6">
-                    {!! Form::text('content', $task->content, [
-                        'id' => 'task-content', 'class' => 'form-control']) !!}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-6">
-                    {!! Form::submit('タスク追加', ['class' => 'btn btn-primary']) !!}
-                </div>
-            </div>
-            {!! Form::close() !!}
-        </div>
-        <hr />
-        <br />
-        <div class="panel-footer">
-            {{ link_to_route('tasks.index', '戻る') }}
+<div id="app">
+    新規作成
+    {!! Form::model($task, [
+        'route' => 'tasks.store', 'method' => 'post', 'class' => 'form-horizontal'
+    ]) !!}
+    {!! Form::close() !!}   
+    <div class="form-group">
+        {!! Form::label('title', 'タスク名', ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="title" v-model="title">
         </div>
     </div>
+    <div class="form-group">
+        {!! Form::label('content', 'content', ['class' => 'col-sm-3 control-label']) !!}
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="content" v-model="content">
+        </div>
+    </div>    
+
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-6">
+            <button class="btn btn-outline-primary" v-on:click="send_post">投稿
+            </button>                    
+        </div>
+    </div>
+</div>
+<!-- -->
+<script>
+var token = $('input[name="_token"]').val();
+console.log( token );
+//
+new Vue({
+    el: '#app',
+    created () {
+    },    
+    data: {
+        title :'',
+        content: '',
+    },
+    methods: {
+        send_post(){
+//            var token = $('input[name="_token"]').val();
+//console.log( token );
+            var task = {
+                'title': this.title,
+                'content': this.content,
+            };
+            axios.post('/api/apitasks/create_task' , task ).then(res => {
+                console.log(res.data );
+                window.location.href = '/tasks';
+            });
+        },        
+    }
+
+});
+</script>
 @endsection

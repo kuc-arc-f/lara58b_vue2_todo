@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Libs\AppConst;
+
 use App\Todo;
 //
 class ApiTodosController extends Controller
@@ -37,6 +39,31 @@ class ApiTodosController extends Controller
         ->get();
         return response()->json( $todos  );
     }
+    /**************************************
+     *
+     **************************************/  
+    public function create_todo(Request $request){
+        $const = new AppConst;
+        $user_id  = $this->get_guestUserId( $const->guest_user_mail );
+//var_dump( $const->guest_user_mail);
+        $inputs = $request->all();
+        $inputs["complete"] = 0;
+        $inputs["user_id"] = $user_id;
+        $todo = new Todo();
+        $todo->fill($inputs);
+        $todo->save();
+        $ret = ['title' => request('title'),'content' => request('content')];
+        return response()->json($ret);
+    }
+    /**************************************
+     *
+     **************************************/
+    public function get_item(Request $request)
+    {
+        $todo = Todo::find(request('id'));
+        $ret = ['id'=> request('id') ];
+        return response()->json($todo );
+    }    
     /**************************************
      *
      **************************************/   

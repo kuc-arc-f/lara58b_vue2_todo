@@ -3,50 +3,76 @@
 @section('title', "show")
 
 @section('content')
-
-<div class="panel panel-default">
-    <br />
-    <h1>Show :</h1>
-    <hr />
-    <div class="panel-heading">
-    </div>
-    <div class="panel-body">
-        <div>
-            <h3>{{ $todo->title }} </h3>
-        </div>
+<div id="app">
+    <div class="panel panel-default">
+        <br />
+        <h1>Show :</h1>
         <hr />
-        <div>
-            <!--  -->
-            content :<br /><br />
-            <div id="content_wrap">
+        <div class="panel-heading">
+        </div>
+        <div class="panel-body">
+            <div>
+                <h3>@{{this.title}} </h3>
             </div>
-        </div>  
-        <hr />
-        <div>
-            complete:  {{ $complete_items[$todo->complete] }}
-        </div>   
-
-        <div class="form-group">
-            {!! Form::hidden('content_hidden', $todo->content, [
-                'id' => 'content-hidden', 'class' => "form-control" ,'required'=>'required' ]) 
-            !!}
+            <hr />
+            <div>
+                <!--  -->
+                content :<br /><br />
+                <div id="content_wrap">
+                    <div v-html="content"></div>
+                </div>
+            </div>  
+            <hr />
+            <div>
+                complete: {{ $complete_str }}
+            </div>   
         </div>
+        <hr />
+        <br />
 
-    </div>
-    <hr />
-    <br />
-    <div class="panel-footer">
-        {{ link_to_route('todos.index', '戻る') }}
+        <div class="panel-footer">
+            {{ link_to_route('todos.index', '戻る') }}
+        </div>
     </div>
 </div>
 <!-- -->
 <script>
+new Vue({
+    el: '#app',
+    created () {
+    },  
+    mounted: function() {
+        this.getItem();
+    },      
+    data: {
+        item: null,
+        title: '',
+        content  : '',
+    },
+    methods: {
+        getItem: function() {
+            var task = {
+                "id" : {{$task_id}},
+            };
+            axios.post('/api/apitodos/get_item' ,task).then(res => {
+                this.item = res.data;
+                this.title = this.item.title;
+                this.content = this.item.content;
+                this.content= marked(this.content);
+console.log(this.item  );                
+console.log(res.data.id );
+//                window.location.href = '/tasks';
+            });
+        }        
+    }
+});
+//
 $(function() {
     //MD_convert
-    var content = $("#content-hidden").val();
-    content= marked(content);
+//    var content = $("#content-hidden").val();
+//    content= marked(content);
 //    console.log(content);
-    $("#content_wrap").append(content);
+//    $("#content_wrap").append(content);
 });
 </script>
     

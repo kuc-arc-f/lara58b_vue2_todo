@@ -38,14 +38,13 @@ class TasksController extends Controller
     /**************************************
      *
      **************************************/    
+    /*
     public function store(Request $request)
     {
         $inputs = $request->all();
-        //validation
         $validation = $this->validator($inputs);
         if($validation->fails())
         {
-// debug_dump($validation->errors());
             return redirect()->back()->withErrors($validation->errors())->withInput();
         }
         $task = new Task();
@@ -53,13 +52,14 @@ class TasksController extends Controller
         $task->save();
         return redirect()->route('tasks.index');
     }
+    */
     /**************************************
      *
      **************************************/
     public function show($id)
     {
         $task = Task::find($id);
-        return view('tasks/show')->with('task', $task);
+        return view('tasks/show')->with('task_id', $id );
     }
     /**************************************
      *
@@ -67,7 +67,8 @@ class TasksController extends Controller
     public function edit($id)
     {
         $task = Task::find($id);
-        return view('tasks/edit')->with('task', $task);
+        //        return view('tasks/show')->with('task_id', $id );
+        return view('tasks/edit')->with('task_id', $id);
     }
     /**************************************
      *

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
+use App\Libs\AppConst;
 use App\Todo;
 
 //
@@ -23,28 +25,34 @@ class TodosController extends Controller
     {
         return view('todos/create')->with('todo', new Todo());
     }    
-    /**************************************
-     *
-     **************************************/    
+    /*
     public function store(Request $request)
     {
+        $const = new AppConst;
+        $user_id  = $this->get_guestUserId( $const->guest_user_mail );
         $inputs = $request->all();
         $inputs["complete"] = 0;
-//debug_dump( $inputs );
+        $inputs["user_id"] = $user_id;
         $todo = new Todo();
         $todo->fill($inputs);
         $todo->save();
         session()->flash('flash_message', '保存が完了しました');
         return redirect()->route('todos.index');
     }
+    */
     /**************************************
      *
      **************************************/
     public function show($id)
     {
+        $task_id  = $id;
         $todo = Todo::find($id);
         $complete_items = $this->get_complete_items();
-        return view('todos/show')->with(compact('todo', 'complete_items') );        
+        $complete_str = $complete_items[$todo->complete];
+        //$task = Task::find($id);
+        //return view('vue/tasks/show')->with('task_id', $id );
+        return view('todos/show')->with(compact('task_id', 'complete_items', 'complete_str') );        
+//        return view('todos/show')->with(compact('todo', 'complete_items') );        
     }    
     /**************************************
      *
@@ -75,15 +83,6 @@ class TodosController extends Controller
         session()->flash('flash_message', '保存が完了しました');
         return redirect()->route('todos.index');
     }
-    /*
-    public function destroy($id)
-    {
-        $todo = Todo::find($id);
-        $todo->delete();
-        session()->flash('flash_message', '削除が完了しました');
-        return redirect()->route('todos.index');
-    }    
-    */
     /**************************************
      *
      **************************************/
