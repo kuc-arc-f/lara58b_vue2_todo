@@ -57,6 +57,28 @@ class ApiTodosController extends Controller
     }
     /**************************************
      *
+     **************************************/  
+    public function update_todo(Request $request){
+        $const = new AppConst;
+        $todo = Todo::find( request('id') );
+        $todo->fill($request->all());
+        $inputs = $request->all();
+        $todo->save();
+        $ret = ['id'=> request('id') , 'title' => request('title'),
+                'content' => request('content')];
+        return response()->json($ret);
+    }
+    /**************************************
+     *
+     **************************************/  
+    public function delete_todo(Request $request){
+        $task = Todo::find(request('id'));
+        $task->delete();
+        $ret = ['id'=> request('id') ];
+        return response()->json($ret);
+    }
+    /**************************************
+     *
      **************************************/
     public function get_item(Request $request)
     {

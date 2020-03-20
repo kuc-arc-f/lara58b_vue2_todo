@@ -37,7 +37,9 @@ Route::prefix('api')->group(function(){
 //    Route::get('/apitodos/test1', 'ApiTodosController@test1');
     Route::post('/apitodos/get_item', 'ApiTodosController@get_item');
     Route::post('/apitodos/search', 'ApiTodosController@search');
+    Route::post('/apitodos/update_todo', 'ApiTodosController@update_todo');    
     Route::post('/apitodos/create_todo', 'ApiTodosController@create_todo');
+    Route::post('/apitodos/delete_todo', 'ApiTodosController@delete_todo');
     Route::resource('apitodos', 'ApiTodosController' );
     //tasks
     Route::post('/apitasks/create_task', 'ApiTasksController@create_task');
